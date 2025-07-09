@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background: #0f0f0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.container span {
+  font-size: 8rem;
+  font-weight: bold;
+  color: #fff;
+  margin: 0 10px;
+  transition: transform 0.3s ease, color 0.3s ease, text-shadow 0.3s ease;
+  cursor: pointer;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.container span:hover {
+  color: #00ffff;
+  transform: scale(1.2) rotate(-5deg);
+  text-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff;
+}

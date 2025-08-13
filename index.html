@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Blogging Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        main {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        .post-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #333;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #555;
+        }
+        .post {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .post h2 {
+            margin: 0 0 10px;
+        }
+        .post small {
+            color: gray;
+        }
+        .share-btn {
+            background: #25d366;
+            border: none;
+            padding: 10px;
+            color: white;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .share-btn:hover {
+            background: #1da851;
+        }
+        .share-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .share-options a {
+            padding: 8px 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+        .whatsapp { background: #25d366; }
+        .instagram { background: #E1306C; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>My Blogging Website</h1>
+</header>
+
+<main>
+    <div class="post-form">
+        <input type="text" id="title" placeholder="Post Title">
+        <textarea id="content" rows="5" placeholder="Write your post here..."></textarea>
+        <button onclick="addPost()">Publish Post</button>
+    </div>
+
+    <div id="posts"></div>
+
+    <!-- Share Section -->
+    <div style="text-align:center; margin-top:20px;">
+        <h3>Share This Website</h3>
+        <button class="share-btn" onclick="shareWebsite()">Share</button>
+        <div class="share-options">
+            <a id="whatsappLink" target="_blank" class="whatsapp">WhatsApp</a>
+            <a id="instagramLink" target="_blank" class="instagram">Instagram</a>
+        </div>
+    </div>
+</main>
+
+<script>
+    const websiteURL = window.location.href;
+
+    function loadPosts() {
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        const postsDiv = document.getElementById('posts');
+        postsDiv.innerHTML = '';
+        posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.classList.add('post');
+            postElement.innerHTML = `
+                <h2>${post.title}</h2>
+                <small>${post.date}</small>
+                <p>${post.content}</p>
+            `;
+            postsDiv.appendChild(postElement);
+        });
+    }
+
+    function addPost() {
+        const title = document.getElementById('title').value.trim();
+        const content = document.getElementById('content').value.trim();
+
+        if (title === '' || content === '') {
+            alert('Please fill in both fields');
+            return;
+        }
+
+        const newPost = {
+            title,
+            content,
+            date: new Date().toLocaleString()
+        };
+
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        posts.unshift(newPost);
+        localStorage.setItem('posts', JSON.stringify(posts));
+
+        document.getElementById('title').value = '';
+        document.getElementById('content').value = '';
+
+        loadPosts();
+    }
+
+    function shareWebsite() {
+        if (navigator.share) {
+            navigator.share({
+                title: "Check out this Blogging Website!",
+                text: "I found this amazing blogging website. Have a look!",
+                url: websiteURL
+            }).catch(err => console.log("Sharing failed", err));
+        } else {
+            alert("Your browser doesn't support direct sharing. Use WhatsApp or Instagram buttons below.");
+        }
+    }
+
+    // Set platform-specific share links
+    document.getElementById('whatsappLink').href = `https://wa.me/?text=Check%20out%20this%20website:%20${encodeURIComponent(websiteURL)}`;
+    document.getElementById('instagramLink').href = `https://www.instagram.com/?url=${encodeURIComponent(websiteURL)}`;
+
+    window.onload = loadPosts;
+</script>
+
+</body>
+</html>
